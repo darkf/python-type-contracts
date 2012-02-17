@@ -25,7 +25,7 @@ class contract:
 
     def f(*args):    
       if len(args) != len(self.annotations):
-        raise TypeError("Expected %d arguments, got %d" % (len(annotations), len(args)))
+        raise TypeError("Expected %d arguments, got %d" % (len(self.annotations), len(args)))
       
       for i,a in enumerate(self.annotations):
         if type(a) == types.ClassType:
