@@ -8,36 +8,42 @@
 #
 # @contract(int, str, {"foo": Callable, "bar": str})
 # def func(x, y, z):
-#   # x is ensured to be an int
-#   # y is ensured to be an str
-#   # z is ensured to be an object with the attributes foo (of type Callable)
-#     and bar (of type str)
+#	 # x is ensured to be an int
+#	 # y is ensured to be an str
+#	 # z is ensured to be an object with the attributes foo (of type Callable)
+#		 and bar (of type str)
 
 # todo: object typechecking and keyword arguments
 import types
 
 class contract:
-  def __init__(self, *annotations):
-    self.annotations = annotations
-    
-  def __call__(self, old_f, *args):
-    # simple type-checking
+	def __init__(self, *annotations):
+		self.annotations = annotations
 
-    def f(*args):    
-      if len(args) != len(self.annotations):
-        raise TypeError("Expected %d arguments, got %d" % (len(self.annotations), len(args)))
-      
-      for i,a in enumerate(self.annotations):
-        if type(a) == types.ClassType:
-          if not isinstance(args[i], a):
-            raise TypeError("Argument %d: expected instance of %s, got %s" % (i+1, a, type(args[i])))
-        
-        elif type(a) == dict or type(a) == object:
-          raise NotImplementedError("object typechecking is not implemented yet")
-          
-        elif type(args[i]) != a:
-          raise TypeError("Argument %d: expected an %s, got an %s" % (i+1, a, type(args[i])))
-          
-      return old_f(*args)
-        
-    return f
+	def __call__(self, old_f, *args):
+		# simple type-checking
+
+		def f(*args):		
+			if len(args) != len(self.annotations):
+				raise TypeError("Expected %d arguments, got %d" % (len(self.annotations), len(args)))
+
+			def rec_typecheck(given, stored):
+				if type(given) == type(tuple()):
+					if type(stored) == type(tuple()):
+						for i in range(len(given)):
+							rec_typecheck(given[i], stored[i])
+					else:
+						raise TypeError("Expected %s but got %s" % (type(stored), type(given)))
+				elif type(given) == type(dict()):
+					if type(stored) == type(dict()):
+						for i in given.keys():
+							rec_typecheck(given[i], stored[i])
+					else:
+						raise TypeError("Expected %s but got %s" % (type(stored), type(given)))
+				elif type(given) != stored: # For non-container types
+					raise TypeError("Expected %s but got %s" % (stored, type(given)))
+
+			rec_typecheck(tuple(args), tuple(self.annotations))
+			return old_f(*args)
+
+		return f
