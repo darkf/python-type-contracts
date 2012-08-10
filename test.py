@@ -10,13 +10,15 @@ def bar(d):
  print "d0:", d['foo']
  print "d1:", d['bar']
 
+# Odd-numbered tests should pass and even-numbered should produce a TypeError
+
 try:
-	foo((5, "hi"))  # should pass
+	foo((5, "hi"))
 except:
 	print "Test #1 failed"
 
 try:
-	foo(("9", 666)) # should fail
+	foo(("9", 666))
 except:
 	print "Test #2 failed"
 
