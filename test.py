@@ -14,20 +14,20 @@ def bar(d):
 
 try:
 	foo((5, "hi"))
-except:
+except TypeError:
 	print "Test #1 failed"
 
 try:
 	foo(("9", 666))
-except:
+except TypeError:
 	print "Test #2 failed"
 
 try:
 	bar({"foo": "hello", "bar": 5})
-except:
+except TypeError:
 	print "Test #3 failed"
 
 try:
 	bar({"foo": 5, "bar": "hello"})
-except:
+except TypeError:
 	print "Test #4 failed"

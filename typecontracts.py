@@ -28,16 +28,16 @@ class contract:
 				raise TypeError("Expected %d arguments, got %d" % (len(self.annotations), len(args)))
 
 			def rec_typecheck(given, stored):
-				if type(given) == type(tuple()):
-					if type(stored) == type(tuple()):
+				if type(given) == types.TupleType:
+					if type(stored) == types.TupleType:
 						for i in range(len(given)):
 							rec_typecheck(given[i], stored[i])
 					else:
 						raise TypeError("Expected %s but got %s" % (type(stored), type(given)))
-				elif type(given) == type(dict()):
-					if type(stored) == type(dict()):
-						for i in given.keys():
-							rec_typecheck(given[i], stored[i])
+				elif type(given) == types.DictType:
+					if type(stored) == types.DictType:
+						for k in given:
+							rec_typecheck(given[k], stored[k])
 					else:
 						raise TypeError("Expected %s but got %s" % (type(stored), type(given)))
 				elif type(given) != stored: # For non-container types
